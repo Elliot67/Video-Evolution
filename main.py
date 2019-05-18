@@ -1,3 +1,5 @@
+# To dectect exact pixels modification use: if not(np.any(np.absolute(currentImg[y, x] - lastImg[y, x]) == 0)):
+
 import numpy as np
 import cv2
 import os
@@ -13,30 +15,30 @@ from shutil import rmtree
 # Change the number of frame between each image
 
 # Set number of Image in the TEMP folder
-imageNumber = 2
+imageNumber = 29
 # Set video dimension into height & width
-height = 100
-width = 100
+height = 360
+width = 640
 result = np.zeros((height, width, 3))
 
-currentImg = cv2.imread('video/0.jpg', cv2.IMREAD_COLOR)
+lastImg = cv2.imread('video/TEMP/number0.tif', cv2.IMREAD_COLOR)
 for name in range(1,imageNumber):
-	lastImg = currentImg
-	currentImg = cv2.imread('video/'+str(name)+'.jpg', cv2.IMREAD_COLOR)
+	currentImg = cv2.imread('video/TEMP/number'+str(name)+'.tif', cv2.IMREAD_COLOR)
+	print(name)
 
 	for x in range(width):
 		for y in range(height):
-			if(currentImg[y, x].all() != lastImg[y, x].all()):
-				result[y, x] += 1/imageNumber
+			if np.any(np.absolute(currentImg[y, x] - lastImg[y, x]) >= 20):
+				result[y, x] += 255/(imageNumber - 1)
+	lastImg = currentImg
+
 
 # try:
 #     rmtree('TEMP')
 # except OSError:
 #     print("Deletion of the directory failed")
 
-print(result)
-
-cv2.imshow('result.jpg', result)
+cv2.imshow('result.tif', result/255)
 cv2.imwrite('result.jpg', result)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
