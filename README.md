@@ -6,8 +6,7 @@ Video Evolution is a python program that allows you to detect moving pixels in v
 
 Video | Output image
 ----- | ------------
-<a href="https://www.youtube.com/watch?v=cG_7OxVTfgc" target="_blank"><img width="500px" src="http://img.youtube.com/vi/cG_7OxVTfgc/0.jpg"/></a> | <img width="500px" src="https://i.imgur.com/bLwxt2j.jpg"/>
-
+<a href="https://www.youtube.com/watch?v=cG_7OxVTfgc"><img width="500px" src="https://i.imgur.com/MgzBeHj.jpg"/></a> | <img width="500px" src="https://i.imgur.com/bLwxt2j.jpg"/>
 
 ## How to use it ?
 
