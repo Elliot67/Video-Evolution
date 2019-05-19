@@ -1,44 +1,44 @@
-# To dectect exact pixels modification use: if not(np.any(np.absolute(currentImg[y, x] - lastImg[y, x]) == 0)):
-
 import numpy as np
 import cv2
 import os
 from shutil import rmtree
 
-# try:
-#     os.mkdir('TEMP')
-# except OSError:
-#     print("Creation of the temporary directory failed. (The TEMP folder may already exist. Delete or rename it, and try again.)")
-#
+video = cv2.VideoCapture('video/crowd.mp4')
+success,image = video.read()
 
-# Transform video to sequence of image
-# Change the number of frame between each image
+## Global informations on the video
+fps = int(video.get(5))
+imageNumber = int(video.get(7)) + 1
+height = int(video.get(4))
+width = int(video.get(3))
+print('fps:', fps, '| number of images:', imageNumber, '| height:', height, '| width:', width)
 
-# Set number of Image in the TEMP folder
-imageNumber = 29
-# Set video dimension into height & width
-height = 360
-width = 640
+## Time informations
+jumpImg = 500
+video.set(cv2.CAP_PROP_POS_AVI_RATIO,1)
+duration = video.get(cv2.CAP_PROP_POS_MSEC)
+video.set(cv2.CAP_PROP_POS_AVI_RATIO,0)
+repeating = int(duration/jumpImg)
+print('duration:', duration, '| picking an image every:', jumpImg, '| number of picken image:', repeating)
+
 result = np.zeros((height, width, 3))
 
-lastImg = cv2.imread('video/TEMP/number0.tif', cv2.IMREAD_COLOR)
-for name in range(1,imageNumber):
-	currentImg = cv2.imread('video/TEMP/number'+str(name)+'.tif', cv2.IMREAD_COLOR)
-	print(name)
-
+success, lastImg = video.read()
+time = jumpImg
+video.set(cv2.CAP_PROP_POS_MSEC, time)
+success, currentImg = video.read()
+while success:
 	for x in range(width):
 		for y in range(height):
-			if np.any(np.absolute(currentImg[y, x] - lastImg[y, x]) >= 20):
-				result[y, x] += 255/(imageNumber - 1)
+			if np.any(np.absolute(currentImg[y, x] - lastImg[y, x]) >= 250):
+				result[y, x] += 255 / repeating
 	lastImg = currentImg
+	print(int(time/jumpImg), '/', repeating, '-', int(time/jumpImg/repeating*100), '%')
+	time += jumpImg
+	video.set(cv2.CAP_PROP_POS_MSEC, time)
+	success, currentImg = video.read()
 
-
-# try:
-#     rmtree('TEMP')
-# except OSError:
-#     print("Deletion of the directory failed")
-
-cv2.imshow('result.tif', result/255)
+cv2.imshow('result.jpg', result/255)
 cv2.imwrite('result.jpg', result)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
