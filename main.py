@@ -1,12 +1,9 @@
 import numpy as np
 import cv2
 import os
-from shutil import rmtree
-
-video = cv2.VideoCapture('video/crowd.mp4')
-success,image = video.read()
 
 ## Global informations on the video
+video = cv2.VideoCapture('video/crowd.mp4') # What is the video source ?
 fps = int(video.get(5))
 imageNumber = int(video.get(7)) + 1
 height = int(video.get(4))
@@ -14,7 +11,7 @@ width = int(video.get(3))
 print('fps:', fps, '| number of images:', imageNumber, '| height:', height, '| width:', width)
 
 ## Time informations
-jumpImg = 500
+jumpImg = 200  # How much ms between each frame ?
 video.set(cv2.CAP_PROP_POS_AVI_RATIO,1)
 duration = video.get(cv2.CAP_PROP_POS_MSEC)
 video.set(cv2.CAP_PROP_POS_AVI_RATIO,0)
@@ -38,6 +35,7 @@ while success:
 	video.set(cv2.CAP_PROP_POS_MSEC, time)
 	success, currentImg = video.read()
 
+video.release()
 cv2.imshow('result.jpg', result/255)
 cv2.imwrite('result.jpg', result)
 cv2.waitKey(0)
